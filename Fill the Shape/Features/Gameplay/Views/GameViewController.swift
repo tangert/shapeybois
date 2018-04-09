@@ -43,7 +43,6 @@ class GameViewController: UIViewController, StoreSubscriber {
     }
     
     func newState(state: AppState) {
-        print ("Grabbing new state")
     }
     
     override var shouldAutorotate: Bool {

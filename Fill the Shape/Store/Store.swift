@@ -13,7 +13,6 @@ import ReSwift
 struct AppState: StateType {
     
     // Game setup
-    var isCurrentlyPlaying: Bool = false
     var gameplayState: GameplayState = .notStarted
     var currentDifficulty: difficultySetting = .medium
     
@@ -32,9 +31,18 @@ struct AppState: StateType {
 }
 
 // Define the app reducer
+//func combineReducers<S>(_ reducers: Reducer<S>...) -> Reducer<S> {
+//    return { action, state in
+//        for reducer in reducers {
+//            reducer(action, state)
+//        }
+//    }
+//}
+
 func appReducer(action: Action, state: AppState?) -> AppState {
     return AppState()
+    
 }
 
 // Finally, define the store
-var mainStore = Store<AppState>(reducer: appReducer, state: nil)
+var mainStore = Store<AppState>(reducer: gameplayReducer, state: nil)

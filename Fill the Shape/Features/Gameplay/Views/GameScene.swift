@@ -8,20 +8,18 @@
 
 import SpriteKit
 import GameplayKit
+import ReSwift
 
 class GameScene: SKScene {
-    
-    // Used to notify store that a user has 
-    private var screenTapRecognizer = UITapGestureRecognizer()
-    private var testShape: Shape?
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     private var borderNode: SKShapeNode?
     private var selectedNode: SKShapeNode?
+    private var testNode: Shape?
     
     var currentScale = 1.0
-    var previousAccuracy: CGFloat = 0
+    var accuracy: CGFloat = 0
     var count = 0
     
     override func didMove(to view: SKView) {
@@ -32,16 +30,16 @@ class GameScene: SKScene {
         self.borderNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
         self.selectedNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
 
-        self.label = SKLabelNode.init(text: "accuracy: \(self.previousAccuracy)")
+        self.label = SKLabelNode.init(text: "accuracy: \(self.accuracy)")
         self.label?.position = CGPoint.init(x: frame.midX, y: frame.midY+200)
         self.addChild(label!)
-        
-        self.testShape = Shape.init(type: .circle, purpose: .inner)
         
         // Get center of screen
         let center: CGPoint = CGPoint.init(x: frame.midX, y: frame.midY)
         
-        print("Test shape object: \(self.testShape)")
+        self.testNode = Shape.init(type: .circle, purpose: .inner, position: center, width: w)
+        self.addChild(testNode!)
+        
         
         if let borderNode = self.borderNode {
             borderNode.lineWidth = 2.5
@@ -84,14 +82,20 @@ class GameScene: SKScene {
         let reverse = forward.reversed()
         return SKAction.sequence([forward, reverse])
     }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         let currentScale = self.spinnyNode?.xScale
         self.selectedNode?.xScale = currentScale!
         self.selectedNode?.yScale = currentScale!
+        self.accuracy = CGFloat(currentScale!)
+        self.label?.attributedText = NSAttributedString(string: "accuracy: \(self.accuracy)")
         
-        self.previousAccuracy = currentScale!
-        self.label?.attributedText = NSAttributedString(string: "accuracy: \(self.previousAccuracy)")
+        self.testNode?.setNewShape(type: ShapeType.random())
+        
+        let tap = TAP_SCREEN(accuracy: Double(self.accuracy))
+        mainStore.dispatch(tap)
+        
         print("ACCURACY: \(currentScale! * 100)")
         
     }

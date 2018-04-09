@@ -8,3 +8,17 @@
 
 import Foundation
 import ReSwift
+
+func gameplayReducer(action: Action, state: AppState?) -> AppState {
+    
+    var state = state ?? AppState()
+    
+    switch action {
+    case let t as TAP_SCREEN:
+        state.currentAccuracy = t.accuracy
+    default:
+        break
+    }
+    
+    return state
+}
