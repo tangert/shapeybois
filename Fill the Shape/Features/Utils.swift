@@ -14,3 +14,11 @@ enum difficultySetting: Double {
     case medium = 0.75 // 75% of area filled
     case hard = 0.9 // 90% of area filled
 }
+
+// Stores the current playing state of the game
+enum GameplayState {
+    case notStarted
+    case playing
+    case paused
+    case ended
+}

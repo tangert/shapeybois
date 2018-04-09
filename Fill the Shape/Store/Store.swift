@@ -14,6 +14,7 @@ struct AppState: StateType {
     
     // Game setup
     var isCurrentlyPlaying: Bool = false
+    var gameplayState: GameplayState = .notStarted
     var currentDifficulty: difficultySetting = .medium
     
     // Current game stats

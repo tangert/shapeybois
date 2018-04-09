@@ -54,6 +54,10 @@ class Shape: SKShapeNode {
         super.init()
         self.model = ShapeModel.init(type: type)
         self.purpose = purpose
+        createInitialPath()
+    }
+    
+    func createInitialPath() {
     }
     
     required init?(coder aDecoder: NSCoder) {

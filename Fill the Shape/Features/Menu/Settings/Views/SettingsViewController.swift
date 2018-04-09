@@ -21,8 +21,6 @@ class SettingsViewController: UIViewController, StoreSubscriber {
         mainStore.subscribe(self)
     }
     
-    
-    
     override func viewWillDisappear(_ animated: Bool) {
         mainStore.unsubscribe(self)
     }
