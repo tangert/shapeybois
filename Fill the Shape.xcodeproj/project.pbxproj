@@ -176,8 +176,8 @@
 		36F62C6B207ADCDC009B8824 /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				36F62C6E207ADD67009B8824 /* Utils.swift */,
-				36F62C6D207ADCF3009B8824 /* Settings */,
+				36F62C8D207AF114009B8824 /* Tutorial */,
+				36F62C8B207AF0E4009B8824 /* Menu */,
 				36F62C6C207ADCE2009B8824 /* Gameplay */,
 			);
 			path = Features;
@@ -189,7 +189,7 @@
 				36F62C71207ADFB9009B8824 /* Actions */,
 				36F62C72207ADFC0009B8824 /* Reducers */,
 				36F62C75207ADFE9009B8824 /* Components */,
-				36F62C70207ADE3C009B8824 /* Views */,
+				36F62C70207ADE3C009B8824 /* Containers */,
 			);
 			path = Gameplay;
 			sourceTree = "<group>";
@@ -197,21 +197,22 @@
 		36F62C6D207ADCF3009B8824 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				36F62C6E207ADD67009B8824 /* Utils.swift */,
 				36F62C77207AE010009B8824 /* Actions */,
 				36F62C76207AE007009B8824 /* Reducers */,
-				36F62C78207AE04A009B8824 /* Views */,
+				36F62C78207AE04A009B8824 /* Containers */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		36F62C70207ADE3C009B8824 /* Views */ = {
+		36F62C70207ADE3C009B8824 /* Containers */ = {
 			isa = PBXGroup;
 			children = (
 				3665674F207ADAB80073A02B /* GameScene.sks */,
 				36656753207ADAB80073A02B /* GameScene.swift */,
 				36656755207ADAB80073A02B /* GameViewController.swift */,
 			);
-			path = Views;
+			path = Containers;
 			sourceTree = "<group>";
 		};
 		36F62C71207ADFB9009B8824 /* Actions */ = {
@@ -255,12 +256,35 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
-		36F62C78207AE04A009B8824 /* Views */ = {
+		36F62C78207AE04A009B8824 /* Containers */ = {
 			isa = PBXGroup;
 			children = (
 				36F62C79207AE055009B8824 /* SettingsViewController.swift */,
 			);
-			path = Views;
+			path = Containers;
+			sourceTree = "<group>";
+		};
+		36F62C8B207AF0E4009B8824 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				36F62C8C207AF0FD009B8824 /* Help */,
+				36F62C6D207ADCF3009B8824 /* Settings */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		36F62C8C207AF0FD009B8824 /* Help */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Help;
+			sourceTree = "<group>";
+		};
+		36F62C8D207AF114009B8824 /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Tutorial;
 			sourceTree = "<group>";
 		};
 		86F645F10E6D9B257A51F8CF /* Frameworks */ = {

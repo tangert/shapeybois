@@ -11,9 +11,12 @@ import GameplayKit
 
 class GameScene: SKScene {
     
+    // Used to notify store that a user has 
+    private var screenTapRecognizer = UITapGestureRecognizer()
+    
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
-    
+        
     override func didMove(to view: SKView) {
         
         // Get label node from scene and store it for use later
@@ -36,7 +39,6 @@ class GameScene: SKScene {
                                               SKAction.removeFromParent()]))
         }
     }
-    
     
     func touchDown(atPoint pos : CGPoint) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {

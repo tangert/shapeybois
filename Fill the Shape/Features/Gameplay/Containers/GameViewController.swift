@@ -24,10 +24,10 @@ class GameViewController: UIViewController, StoreSubscriber {
                 
                 // Present the scene
                 view.presentScene(scene)
+                view.backgroundColor = UIColor.white
             }
             
             view.ignoresSiblingOrder = true
-            
             view.showsFPS = true
             view.showsNodeCount = true
         }
@@ -45,8 +45,6 @@ class GameViewController: UIViewController, StoreSubscriber {
     func newState(state: AppState) {
         print ("Grabbing new state")
     }
-    
-    
     
     override var shouldAutorotate: Bool {
         return true

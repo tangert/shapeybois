@@ -17,14 +17,16 @@ struct AppState: StateType {
     var currentDifficulty: difficultySetting = .medium
     
     // Current game stats
-    var livesLeft: Int = 3
-    var currentSpeed: TimeInterval = 1 // time in seconds it takes for a shape to fill and then animate back
-    var currentAccuracy: Double = 1.0
-    var reactionTime: TimeInterval = 0 // time in seconds it takes to tap the screen
-    
-    // Hook up to Realm / DB
     var highScore: Int = 0
+    var livesLeft: Int = 3
+    var currentShape: ShapeType = .circle // cycles between the different shape types
+    var currentAccuracy: Double = 1.0
     var currentScore: Int = 0
+    
+    // Time variables
+    var timeLeft: TimeInterval = 5 // time in seconds left for the user to tap the screen
+    var currentSpeed: TimeInterval = 1 // time in seconds it takes for a shape to fill and then animate back
+    var reactionTime: TimeInterval = 0 // time in seconds it takes to tap the screen
     
 }
 

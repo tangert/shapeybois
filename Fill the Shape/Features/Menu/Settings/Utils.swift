@@ -10,14 +10,7 @@ import Foundation
 
 // Stores the difficulty setting for the current game
 enum difficultySetting: Double {
-    
-    // easy difficulty = 60% of area filled
-    case easy = 0.6
-    
-    // medium difficulty = 75% of area filled
-    case medium = 0.75
-    
-    // hard difficulty = 90% of area filled
-    case hard = 0.9
-    
+    case easy = 0.6 // 60% of area filled
+    case medium = 0.75 // 75% of area filled
+    case hard = 0.9 // 90% of area filled
 }
