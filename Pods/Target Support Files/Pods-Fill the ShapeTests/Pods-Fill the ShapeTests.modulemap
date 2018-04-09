@@ -1,0 +1,6 @@
+framework module Pods_Fill_the_ShapeTests {
+  umbrella header "Pods-Fill the ShapeTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

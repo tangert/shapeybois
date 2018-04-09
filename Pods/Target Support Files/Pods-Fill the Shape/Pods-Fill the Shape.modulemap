@@ -1,0 +1,6 @@
+framework module Pods_Fill_the_Shape {
+  umbrella header "Pods-Fill the Shape-umbrella.h"
+
+  export *
+  module * { export * }
+}

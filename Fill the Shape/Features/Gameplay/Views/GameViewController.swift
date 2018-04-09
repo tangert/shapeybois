@@ -9,8 +9,9 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import ReSwift
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, StoreSubscriber {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +32,22 @@ class GameViewController: UIViewController {
             view.showsNodeCount = true
         }
     }
-
+    
+    // MARK: ReSwift setup
+    override func viewWillAppear(_ animated: Bool) {
+        mainStore.subscribe(self)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        mainStore.unsubscribe(self)
+    }
+    
+    func newState(state: AppState) {
+        print ("Grabbing new state")
+    }
+    
+    
+    
     override var shouldAutorotate: Bool {
         return true
     }
