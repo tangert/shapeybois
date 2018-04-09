@@ -13,10 +13,14 @@ import ReSwift
 class GameScene: SKScene {
     
     private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
-    private var borderNode: SKShapeNode?
-    private var selectedNode: SKShapeNode?
-    private var testNode: Shape?
+    
+    // Main nodes
+    private var innerNode : Shape?
+    private var outerNode: Shape?
+    private var selectedNode: Shape?
+    
+    // Guide node
+    private var guideNode: Shape?
     
     var currentScale = 1.0
     var accuracy: CGFloat = 0
@@ -25,47 +29,54 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         
         // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.25
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
-        self.borderNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
-        self.selectedNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
+        let width = (self.size.width + self.size.height) * 0.25
+        let center: CGPoint = CGPoint.init(x: frame.midX, y: frame.midY)
 
+        let newColor = SKColor.random
+        let difficulty = mainStore.state.currentDifficulty
+        
+        // Inner node setup
+        self.innerNode = Shape.init(type: .circle, purpose: .inner, parentRect: frame, position: center, width: width)
+        self.innerNode?.setColor(color: newColor)
+
+        // Outer node setup
+        self.outerNode = Shape.init(type: .circle, purpose: .outer, parentRect: frame, position: center, width: width)
+        self.outerNode?.setColor(color: newColor)
+        
+        // Guide node setup
+        let guideNodeWidth = width * CGFloat(difficulty.rawValue)
+        self.guideNode = Shape.init(type: .circle, purpose: .guide, parentRect: frame, position: center, width: guideNodeWidth )
+        self.guideNode?.setColor(color: mapDifficultyToColor(setting: difficulty))
+
+        // Label node
         self.label = SKLabelNode.init(text: "accuracy: \(self.accuracy)")
         self.label?.position = CGPoint.init(x: frame.midX, y: frame.midY+200)
         self.addChild(label!)
         
-        // Get center of screen
-        let center: CGPoint = CGPoint.init(x: frame.midX, y: frame.midY)
         
-        // CGRect.init(x: center.x, y: center.y, width: w, height: w)
-        self.testNode = Shape.init(type: .circle, purpose: .inner, parentRect: frame, position: center, width: w)
-        self.addChild(testNode!)
-        
-        if let borderNode = self.borderNode {
-            borderNode.lineWidth = 2.5
-            borderNode.strokeColor = SKColor.red
-            borderNode.position = center
-            self.addChild(borderNode)
+        if let selected = self.selectedNode {
+            selected.lineWidth = 2.5
+            self.addChild(selected)
         }
         
-        if let selectedNode = self.selectedNode {
-            selectedNode.lineWidth = 2.5
-            selectedNode.strokeColor = SKColor.green
-            selectedNode.position = center
-            self.addChild(selectedNode)
+        if let border = self.outerNode {
+            border.lineWidth = 5
+            self.addChild(border)
         }
         
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            spinnyNode.fillColor = SKColor.blue
-            
-            // import the speed from state here
-            spinnyNode.run(animationSequence(speed: 0.3))
-            
-            spinnyNode.position = center
-            self.addChild(spinnyNode)
+        if let guide = self.guideNode {
+            guide.lineWidth = 2.5
+            self.addChild(guide)
+        }
+        
+        if let inner = self.innerNode {
+            inner.lineWidth = 2.5
+            inner.run(animationSequence(speed: 0.3))
+            self.addChild(inner)
         }
     }
+    
+    // Animations
     
     func animationSequence(speed: TimeInterval) -> SKAction {
         return SKAction.repeatForever(
@@ -79,8 +90,9 @@ class GameScene: SKScene {
     }
     
     func growShrinkLoop(speed: TimeInterval) -> SKAction {
+        
         let growAction = SKAction.scale(to: 1.0, duration: speed)
-        let shrinkAction = SKAction.scale(to: 0.2, duration: speed)
+        let shrinkAction = SKAction.scale(to: 0.25, duration: speed)
         let forward = SKAction.sequence([growAction, shrinkAction])
         let reverse = forward.reversed()
         return SKAction.sequence([forward, reverse])
@@ -88,13 +100,23 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        let currentScale = self.spinnyNode?.xScale
+        let currentScale = self.innerNode?.xScale
         self.selectedNode?.xScale = currentScale!
         self.selectedNode?.yScale = currentScale!
         self.accuracy = CGFloat(currentScale!)
         self.label?.attributedText = NSAttributedString(string: "accuracy: \(self.accuracy)")
         
-        self.testNode?.setNewShape(type: ShapeType.random())
+        let newColor = SKColor.random
+        let newShape = ShapeType.random()
+        self.selectedNode = nil
+        
+        self.outerNode?.setNewShape(type: newShape)
+        self.outerNode?.setColor(color: newColor)
+        
+        self.innerNode?.setNewShape(type: newShape)
+        self.innerNode?.setColor(color: newColor)
+        
+        self.guideNode?.setNewShape(type: newShape)
         
         let tap = TAP_SCREEN(accuracy: Double(self.accuracy))
         mainStore.dispatch(tap)
@@ -102,7 +124,7 @@ class GameScene: SKScene {
         print("ACCURACY: \(currentScale! * 100)")
         
     }
-    
+
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
     }

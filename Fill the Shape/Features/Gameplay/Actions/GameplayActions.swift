@@ -22,6 +22,10 @@ struct TAP_SCREEN: Action {
 
 // MARK: Gameplay variable actions
 struct DECREASE_TIMER: Action {}
+struct INCREASE_SPEED: Action {
+    let amount: TimeInterval
+}
+
 struct SET_NEW_HIGHSCORE: Action {
     let newScore: Int
 }

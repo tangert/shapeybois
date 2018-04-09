@@ -7,13 +7,24 @@
 //
 
 import Foundation
-import SceneKit
+import SpriteKit
 
 // Stores the difficulty setting for the current game
 enum difficultySetting: Double {
-    case easy = 0.6 // 60% of area filled
-    case medium = 0.75 // 75% of area filled
+    case easy = 0.7 // 60% of area filled
+    case medium = 0.8 // 75% of area filled
     case hard = 0.9 // 90% of area filled
+}
+
+func mapDifficultyToColor(setting: difficultySetting) -> SKColor {
+    switch(setting){
+    case .easy:
+        return SKColor.green
+    case .medium:
+        return SKColor.orange
+    case .hard:
+        return SKColor.red
+    }
 }
 
 // Stores the current playing state of the game

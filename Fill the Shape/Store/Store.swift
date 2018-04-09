@@ -31,17 +31,17 @@ struct AppState: StateType {
 }
 
 // Define the app reducer
-//func combineReducers<S>(_ reducers: Reducer<S>...) -> Reducer<S> {
-//    return { action, state in
+//func combineReducers(_ reducers: [Reducer]) -> Reducer {
+//    return {
+//        action, state in
 //        for reducer in reducers {
-//            reducer(action, state)
+//            reducer(action)
 //        }
 //    }
 //}
 
 func appReducer(action: Action, state: AppState?) -> AppState {
     return AppState()
-    
 }
 
 // Finally, define the store

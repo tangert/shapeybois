@@ -29,6 +29,7 @@ enum ShapeType: Int {
 enum ShapePurpose {
     case inner // the shape that gradually animates to fill in/out
     case outer // serves as the boundry
+    case guide // serves as a guide for what's happening
 }
 
 // Define the shape model used for the actual SKNode
@@ -61,50 +62,37 @@ class Shape: SKShapeNode {
         self.position = position
         self.width = width
         
-        // Set the color
-        setColor()
-        
         // Create the path
-        createInitialShape()
+        setNewShape(type: type)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createInitialShape() {
-        
-        let newPath = createPolygonPath(parentRect: parentRect, lineWidth: 2, type: .circle, cornerRadius: 0, rotationOffset: rotationOffset)
-        self.path = newPath.cgPath
-        print("Initial position: \(self.position)")
-        
-    }
-    
     // MARK: Settters
-    
     func setColor(color: SKColor = .random) {
+
         if self.model.purpose == .inner {
-            self.fillColor = color
+            self.run(SKAction.customAction(withDuration: 0.5, actionBlock: { (node, dur) in
+                self.fillColor = color
+            }))
         } else {
-            self.strokeColor = color
+            self.run(SKAction.customAction(withDuration: 0.5, actionBlock: { (node, dur) in
+                self.strokeColor = color
+            }))
         }
     }
     
     func setNewShape(type: ShapeType) {
-        
-        let newPath = createPolygonPath(parentRect: parentRect, lineWidth: 2, type: type, cornerRadius: 0, rotationOffset: rotationOffset)
+        let newPath = createPolygonPath(parentRect: parentRect, lineWidth: 5, type: type, cornerRadius: 0, rotationOffset: rotationOffset)
         self.path = newPath.cgPath
-        
-        bounceAnimate()
-        setColor()
-
-        print("New position: \(self.position)")
     }
     
     func bounceAnimate() {
-        self.setScale(0.5)
-        let popAction = SKAction.scale(to: 1, duration: 0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1)
-        self.run(popAction)
+        let shrink = SKAction.scale(to: 1.15, duration: 0.1)
+        let pop = SKAction.scale(to: 1, duration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1)
+        self.run(SKAction.sequence([shrink, pop]))
     }
     
     // Shape path functions
