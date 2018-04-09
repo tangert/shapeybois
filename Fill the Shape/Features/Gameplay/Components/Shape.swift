@@ -45,16 +45,26 @@ struct ShapeModel {
 class Shape: SKShapeNode {
     
     // Holds basic shape information about the node
+    var parentRect: CGRect!
+    var testRect: CGRect!
     var model: ShapeModel!
     var width: CGFloat!
+    var color: SKColor!
     var rotationOffset = CGFloat(.pi / 2.0)
     
-    init(type: ShapeType, purpose: ShapePurpose, position: CGPoint, width: CGFloat) {
+    init(type: ShapeType, purpose: ShapePurpose, parentRect: CGRect, position: CGPoint, width: CGFloat) {
         super.init()
+        
+        // Initialize variables
         self.model = ShapeModel.init(type: type, purpose: purpose)
+        self.parentRect = parentRect
         self.position = position
         self.width = width
-        self.fillColor = SKColor.blue
+        
+        // Set the color
+        setColor()
+        
+        // Create the path
         createInitialShape()
     }
     
@@ -63,15 +73,38 @@ class Shape: SKShapeNode {
     }
     
     func createInitialShape() {
-        let newPath = createPolygonPath(parentRect: CGRect.init(x: position.x, y: position.y, width: width, height: width), lineWidth: 2, type: .circle, cornerRadius: 0, rotationOffset: rotationOffset)
+        
+        let newPath = createPolygonPath(parentRect: parentRect, lineWidth: 2, type: .circle, cornerRadius: 0, rotationOffset: rotationOffset)
         self.path = newPath.cgPath
+        print("Initial position: \(self.position)")
+        
+    }
+    
+    // MARK: Settters
+    
+    func setColor(color: SKColor = .random) {
+        if self.model.purpose == .inner {
+            self.fillColor = color
+        } else {
+            self.strokeColor = color
+        }
     }
     
     func setNewShape(type: ShapeType) {
-        let newPath = createPolygonPath(parentRect: CGRect.init(x: position.x, y: position.y, width: width, height: width), lineWidth: 2, type: type, cornerRadius: 0, rotationOffset: rotationOffset)
         
-        // Animate to this
+        let newPath = createPolygonPath(parentRect: parentRect, lineWidth: 2, type: type, cornerRadius: 0, rotationOffset: rotationOffset)
         self.path = newPath.cgPath
+        
+        bounceAnimate()
+        setColor()
+
+        print("New position: \(self.position)")
+    }
+    
+    func bounceAnimate() {
+        self.setScale(0.5)
+        let popAction = SKAction.scale(to: 1, duration: 0.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1)
+        self.run(popAction)
     }
     
     // Shape path functions
@@ -82,18 +115,22 @@ class Shape: SKShapeNode {
                            rotationOffset: CGFloat = 0)
         -> UIBezierPath {
             
+            // Grab the center
+            let center = self.position
+            
+            // Circular path
             if type == .circle {
                 
-                let circlePath = UIBezierPath(arcCenter: CGPoint(x: parentRect.midX,y: parentRect.midY), radius: CGFloat(self.width/2), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
+                let circlePath = UIBezierPath(arcCenter: center, radius: CGFloat(self.width/2), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
                 
                 return circlePath
             }
             
+            // All other paths
             let sides = type.rawValue
             let path = UIBezierPath()
             let theta: CGFloat = CGFloat(2.0 * .pi) / CGFloat(sides)
             let width = self.width/2
-            let center = CGPoint(x: position.x, y: position.y)
             
             let first = width - lineWidth + cornerRadius
             let second = (cos(theta) * cornerRadius) / 2.0
@@ -119,10 +156,6 @@ class Shape: SKShapeNode {
             }
             
             path.close()
-            
-            let bounds = path.bounds
-            let transform = CGAffineTransform(translationX: -bounds.origin.x + parentRect.origin.x + lineWidth / 2.0, y: -bounds.origin.y + parentRect.origin.y + lineWidth / 2.0)
-            path.apply(transform)
             
             return path
     }

@@ -25,7 +25,7 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         
         // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.15
+        let w = (self.size.width + self.size.height) * 0.25
         self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
         self.borderNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
         self.selectedNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
@@ -37,9 +37,9 @@ class GameScene: SKScene {
         // Get center of screen
         let center: CGPoint = CGPoint.init(x: frame.midX, y: frame.midY)
         
-        self.testNode = Shape.init(type: .circle, purpose: .inner, position: center, width: w)
+        // CGRect.init(x: center.x, y: center.y, width: w, height: w)
+        self.testNode = Shape.init(type: .circle, purpose: .inner, parentRect: frame, position: center, width: w)
         self.addChild(testNode!)
-        
         
         if let borderNode = self.borderNode {
             borderNode.lineWidth = 2.5
@@ -58,21 +58,24 @@ class GameScene: SKScene {
         if let spinnyNode = self.spinnyNode {
             spinnyNode.lineWidth = 2.5
             spinnyNode.fillColor = SKColor.blue
-            spinnyNode.run(
-                SKAction.repeatForever(
-                    SKAction.sequence(
-                        [growShrinkLoop(speed: 0.3),
-                         SKAction.run {
-                            self.count += 1
-//                            print ("completing growshrink: \(self.count)")
-                            }]
-                    )
-                )
-            )
+            
+            // import the speed from state here
+            spinnyNode.run(animationSequence(speed: 0.3))
             
             spinnyNode.position = center
             self.addChild(spinnyNode)
         }
+    }
+    
+    func animationSequence(speed: TimeInterval) -> SKAction {
+        return SKAction.repeatForever(
+            SKAction.sequence(
+                [growShrinkLoop(speed: 0.3),
+                 SKAction.run {
+                    self.count += 1
+                    }]
+            )
+        )
     }
     
     func growShrinkLoop(speed: TimeInterval) -> SKAction {

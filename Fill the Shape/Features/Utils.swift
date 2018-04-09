@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SceneKit
 
 // Stores the difficulty setting for the current game
 enum difficultySetting: Double {
@@ -21,4 +22,17 @@ enum GameplayState {
     case playing
     case paused
     case ended
+}
+
+// Convenience extensions
+extension CGFloat {
+    static var random: CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UInt32.max)
+    }
+}
+
+extension UIColor {
+    static var random: UIColor {
+        return UIColor(red: .random, green: .random, blue: .random, alpha: 1.0)
+    }
 }

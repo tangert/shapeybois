@@ -10,9 +10,9 @@ import Foundation
 import ReSwift
 
 // MARK: Gameplay setup
-struct START_GAME: Action {}
-struct PAUSE_GAME: Action {}
-struct END_GAME: Action {}
+struct ADJUST_GAMEPLAY_STATE: Action {
+    let state: GameplayState
+}
 
 // MARK: User actions
 // When the user taps the screen
@@ -29,6 +29,10 @@ struct DECREASE_LIVES_LEFT: Action {}
 struct SET_CURRENT_SHAPE: Action {
     let shape: ShapeType
 }
-struct SET_CURRENT_ACCURACY: Action {}
-struct SET_CURRENT_SCORE: Action {}
+struct SET_CURRENT_ACCURACY: Action {
+    let accuracy: Double
+}
+struct SET_CURRENT_SCORE: Action {
+    let score: Int
+}
 
