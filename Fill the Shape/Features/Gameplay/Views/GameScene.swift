@@ -19,6 +19,7 @@ class GameScene: SKScene, StoreSubscriber {
     private var innerNode : Shape?
     private var outerNode: Shape?
     private var selectedNode: Shape?
+    private var allNodes: [Shape?]?
     
     // Guide node
     private var guideNode: Shape?
@@ -28,6 +29,8 @@ class GameScene: SKScene, StoreSubscriber {
         
         print("\nNEW STATE: \(state)")
         
+        allNodes = [innerNode, outerNode, selectedNode, guideNode]
+        
         // MARK: Label
         // Current accuracy from the label
         self.currentScoreLabel?.attributedText = NSAttributedString(string: "Accuracy: \(state.currentAccuracy)")
@@ -35,18 +38,15 @@ class GameScene: SKScene, StoreSubscriber {
         // MARK: Lives left
         // Affect the lives component
         
-        // MARK: Nodes
-        // Outer node
-        self.outerNode?.setNewShape(type: state.currentShape)
-        self.outerNode?.setColor(color: state.currentColor)
-        
-        // Inner node
-        self.innerNode?.setNewShape(type: state.currentShape)
-        self.innerNode?.setColor(color: state.currentColor)
-        
-        // Guide node (only shape, color is constant)
-        self.guideNode?.setNewShape(type: state.currentShape)
-        
+        // MARK: Node properties
+        for node in allNodes! {
+            if let n = node {
+                n.setNewShape(type: state.currentShape)
+                if n.model.purpose != ShapePurpose.guide {
+                    n.setColor(color: state.currentColor)
+                }
+            }
+        }
     }
     
     // MARK: Main touch interaction
