@@ -17,7 +17,7 @@ struct END_GAME: Action {}
 // MARK: User actions
 // When the user taps the screen
 struct TAP_SCREEN: Action {
-let accuracy: Double
+    let accuracy: Double
 }
 
 // MARK: Gameplay variable actions

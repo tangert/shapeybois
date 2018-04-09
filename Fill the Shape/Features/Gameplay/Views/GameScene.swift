@@ -63,7 +63,7 @@ class GameScene: SKScene {
             spinnyNode.run(
                 SKAction.repeatForever(
                     SKAction.sequence(
-                        [growShrinkLoop(speed: 0.5),
+                        [growShrinkLoop(speed: 0.3),
                          SKAction.run {
                             self.count += 1
 //                            print ("completing growshrink: \(self.count)")
