@@ -17,93 +17,84 @@ class GameScene: SKScene {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
-
+    private var borderNode: SKShapeNode?
+    private var selectedNode: SKShapeNode?
+    
+    var currentScale = 1.0
+    var previousAccuracy: CGFloat = 0
+    var count = 0
     
     override func didMove(to view: SKView) {
         
         // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+        let w = (self.size.width + self.size.height) * 0.15
+        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
+        self.borderNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
+        self.selectedNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w))
+
+        self.label = SKLabelNode.init(text: "accuracy: \(self.previousAccuracy)")
+        self.label?.position = CGPoint.init(x: frame.midX, y: frame.midY+200)
+        self.addChild(label!)
+        
         self.testShape = Shape.init(type: .circle, purpose: .inner)
         
-        //Initial setup
         // Get center of screen
         let center: CGPoint = CGPoint.init(x: frame.midX, y: frame.midY)
         
         print("Test shape object: \(self.testShape)")
         
-        let growAction = SKAction.scale(by: 1.0, duration: 0.2)
-        let shrinkAction = SKAction.scale(by: 0.2, duration: 0.2)
-        let forward = SKAction.sequence([growAction, shrinkAction])
-        let reverse = forward.reversed()
-        let growShrinkLoop = SKAction.repeatForever(SKAction.sequence([forward, reverse]))
+        if let borderNode = self.borderNode {
+            borderNode.lineWidth = 2.5
+            borderNode.strokeColor = SKColor.red
+            borderNode.position = center
+            self.addChild(borderNode)
+        }
+        
+        if let selectedNode = self.selectedNode {
+            selectedNode.lineWidth = 2.5
+            selectedNode.strokeColor = SKColor.green
+            selectedNode.position = center
+            self.addChild(selectedNode)
+        }
         
         if let spinnyNode = self.spinnyNode {
             spinnyNode.lineWidth = 2.5
             spinnyNode.fillColor = SKColor.blue
-            spinnyNode.run(growShrinkLoop)
+            spinnyNode.run(
+                SKAction.repeatForever(
+                    SKAction.sequence(
+                        [growShrinkLoop(speed: 0.5),
+                         SKAction.run {
+                            self.count += 1
+//                            print ("completing growshrink: \(self.count)")
+                            }]
+                    )
+                )
+            )
             
             spinnyNode.position = center
             self.addChild(spinnyNode)
-//            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-//                                              SKAction.fadeOut(withDuration: 0.5),
-//                                              SKAction.removeFromParent()]))
         }
     }
     
+    func growShrinkLoop(speed: TimeInterval) -> SKAction {
+        let growAction = SKAction.scale(to: 1.0, duration: speed)
+        let shrinkAction = SKAction.scale(to: 0.2, duration: speed)
+        let forward = SKAction.sequence([growAction, shrinkAction])
+        let reverse = forward.reversed()
+        return SKAction.sequence([forward, reverse])
+    }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
+        let currentScale = self.spinnyNode?.xScale
+        self.selectedNode?.xScale = currentScale!
+        self.selectedNode?.yScale = currentScale!
         
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.previousAccuracy = currentScale!
+        self.label?.attributedText = NSAttributedString(string: "accuracy: \(self.previousAccuracy)")
+        print("ACCURACY: \(currentScale! * 100)")
         
-        print ("DRAGGING")
-
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
     }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touches ended")
-
-        
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
