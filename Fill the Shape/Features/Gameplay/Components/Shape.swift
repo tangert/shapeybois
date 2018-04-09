@@ -72,27 +72,26 @@ class Shape: SKShapeNode {
     
     // MARK: Settters
     func setColor(color: SKColor = .random) {
-
         if self.model.purpose == .inner {
-            self.run(SKAction.customAction(withDuration: 0.5, actionBlock: { (node, dur) in
-                self.fillColor = color
-            }))
+            self.fillColor = color
         } else {
-            self.run(SKAction.customAction(withDuration: 0.5, actionBlock: { (node, dur) in
-                self.strokeColor = color
-            }))
+            self.strokeColor = color
         }
     }
     
     func setNewShape(type: ShapeType) {
+        
+        let currentPath = self.path
         let newPath = createPolygonPath(parentRect: parentRect, lineWidth: 5, type: type, cornerRadius: 0, rotationOffset: rotationOffset)
         self.path = newPath.cgPath
+        
     }
     
     func bounceAnimate() {
-        let shrink = SKAction.scale(to: 1.15, duration: 0.1)
-        let pop = SKAction.scale(to: 1, duration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1)
-        self.run(SKAction.sequence([shrink, pop]))
+        let shrink = SKAction.scale(by: 0.5, duration: 0.1)
+        let pop = SKAction.scale(by: 1.5, duration: 0.1)
+        let back = SKAction.scale(to: 1.0, duration: 0.1)
+        self.run(SKAction.sequence([shrink, pop, back]))
     }
     
     // Shape path functions

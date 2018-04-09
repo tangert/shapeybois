@@ -10,9 +10,10 @@ import SpriteKit
 import GameplayKit
 import ReSwift
 
-class GameScene: SKScene {
+class GameScene: SKScene, StoreSubscriber {
     
-    private var label : SKLabelNode?
+    // Shows current score
+    private var currentScoreLabel : SKLabelNode?
     
     // Main nodes
     private var innerNode : Shape?
@@ -22,15 +23,67 @@ class GameScene: SKScene {
     // Guide node
     private var guideNode: Shape?
     
-    var currentScale = 1.0
-    var accuracy: CGFloat = 0
-    var count = 0
+    // Called on every new state change
+    func newState(state: AppState) {
+        
+        print("\nNEW STATE: \(state)")
+        
+        // MARK: Label
+        // Current accuracy from the label
+        self.currentScoreLabel?.attributedText = NSAttributedString(string: "Accuracy: \(state.currentAccuracy)")
+        
+        // MARK: Lives left
+        // Affect the lives component
+        
+        // MARK: Nodes
+        // Outer node
+        self.outerNode?.setNewShape(type: state.currentShape)
+        self.outerNode?.setColor(color: state.currentColor)
+        
+        // Inner node
+        self.innerNode?.setNewShape(type: state.currentShape)
+        self.innerNode?.setColor(color: state.currentColor)
+        
+        // Guide node (only shape, color is constant)
+        self.guideNode?.setNewShape(type: state.currentShape)
+        
+    }
     
+    // MARK: Main touch interaction
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        // Grab the current accuracy
+        let currentScale = self.innerNode?.xScale
+        self.selectedNode?.xScale = currentScale!
+        self.selectedNode?.yScale = currentScale!
+        let accuracy = CGFloat(currentScale!)
+        
+        // Grab the new shape and color for the next round
+        let newColor = SKColor.random
+        let newShape = ShapeType.random()
+        
+        // DISPATCH ACTIONS
+        mainStore.dispatch( TAP_SCREEN(accuracy: Double(accuracy)) )
+        mainStore.dispatch( SET_CURRENT_SHAPE(shape: newShape) )
+        mainStore.dispatch( SET_CURRENT_COLOR(color: newColor) )
+        
+    }
+    
+    // MARK: View lifecycle functions
+    // Called before move
+    override func willMove(from view: SKView) {
+        mainStore.unsubscribe(self)
+    }
+    
+    // Called right after load
     override func didMove(to view: SKView) {
+        
+        mainStore.subscribe(self)
         
         // Create shape node to use during mouse interaction
         let width = (self.size.width + self.size.height) * 0.25
         let center: CGPoint = CGPoint.init(x: frame.midX, y: frame.midY)
+        let labelPosition = CGPoint.init(x: frame.midX, y: frame.midY + (frame.maxY - frame.midY)/2)
 
         let newColor = SKColor.random
         let difficulty = mainStore.state.currentDifficulty
@@ -49,9 +102,9 @@ class GameScene: SKScene {
         self.guideNode?.setColor(color: mapDifficultyToColor(setting: difficulty))
 
         // Label node
-        self.label = SKLabelNode.init(text: "accuracy: \(self.accuracy)")
-        self.label?.position = CGPoint.init(x: frame.midX, y: frame.midY+200)
-        self.addChild(label!)
+        self.currentScoreLabel = SKLabelNode.init(text: "accuracy: \(mainStore.state.currentAccuracy)")
+        self.currentScoreLabel?.position = labelPosition
+        self.addChild(currentScoreLabel!)
         
         
         if let selected = self.selectedNode {
@@ -77,14 +130,13 @@ class GameScene: SKScene {
     }
     
     // Animations
-    
     func animationSequence(speed: TimeInterval) -> SKAction {
         return SKAction.repeatForever(
             SKAction.sequence(
-                [growShrinkLoop(speed: 0.3),
+                [growShrinkLoop(speed: mainStore.state.currentSpeed),
                  SKAction.run {
-                    self.count += 1
-                    }]
+                    mainStore.dispatch( INCREASE_ROUNDS() )
+                }]
             )
         )
     }
@@ -96,33 +148,6 @@ class GameScene: SKScene {
         let forward = SKAction.sequence([growAction, shrinkAction])
         let reverse = forward.reversed()
         return SKAction.sequence([forward, reverse])
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        let currentScale = self.innerNode?.xScale
-        self.selectedNode?.xScale = currentScale!
-        self.selectedNode?.yScale = currentScale!
-        self.accuracy = CGFloat(currentScale!)
-        self.label?.attributedText = NSAttributedString(string: "accuracy: \(self.accuracy)")
-        
-        let newColor = SKColor.random
-        let newShape = ShapeType.random()
-        self.selectedNode = nil
-        
-        self.outerNode?.setNewShape(type: newShape)
-        self.outerNode?.setColor(color: newColor)
-        
-        self.innerNode?.setNewShape(type: newShape)
-        self.innerNode?.setColor(color: newColor)
-        
-        self.guideNode?.setNewShape(type: newShape)
-        
-        let tap = TAP_SCREEN(accuracy: Double(self.accuracy))
-        mainStore.dispatch(tap)
-        
-        print("ACCURACY: \(currentScale! * 100)")
-        
     }
 
     override func update(_ currentTime: TimeInterval) {

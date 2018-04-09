@@ -9,9 +9,8 @@
 import UIKit
 import SpriteKit
 import GameplayKit
-import ReSwift
 
-class GameViewController: UIViewController, StoreSubscriber {
+class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +18,7 @@ class GameViewController: UIViewController, StoreSubscriber {
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
             if let scene = SKScene(fileNamed: "GameScene") {
+                
                 // Set the scale mode to scale to fit the window
                 scene.scaleMode = .aspectFill
                 
@@ -31,18 +31,6 @@ class GameViewController: UIViewController, StoreSubscriber {
             view.showsFPS = true
             view.showsNodeCount = true
         }
-    }
-    
-    // MARK: ReSwift setup
-    override func viewWillAppear(_ animated: Bool) {
-        mainStore.subscribe(self)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        mainStore.unsubscribe(self)
-    }
-    
-    func newState(state: AppState) {
     }
     
     override var shouldAutorotate: Bool {

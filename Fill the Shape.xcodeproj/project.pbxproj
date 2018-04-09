@@ -27,6 +27,7 @@
 		36F62C80207AE803009B8824 /* SettingsReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F62C7F207AE803009B8824 /* SettingsReducer.swift */; };
 		36F62C82207AE80F009B8824 /* SettingsActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F62C81207AE80F009B8824 /* SettingsActions.swift */; };
 		36F62C93207BD52A009B8824 /* SpriteKit-Spring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F62C92207BD52A009B8824 /* SpriteKit-Spring.swift */; };
+		36F62C95207C0457009B8824 /* Life.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F62C94207C0457009B8824 /* Life.swift */; };
 		8A2ACAA7EA284E2E48FDCB7A /* Pods_Fill_the_ShapeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 015BBE40DE4191682E5203A9 /* Pods_Fill_the_ShapeUITests.framework */; };
 		D8510F945244E87411314455 /* Pods_Fill_the_ShapeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA14CEA53CCB6FEF26AF3E02 /* Pods_Fill_the_ShapeTests.framework */; };
 /* End PBXBuildFile section */
@@ -77,6 +78,7 @@
 		36F62C7F207AE803009B8824 /* SettingsReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReducer.swift; sourceTree = "<group>"; };
 		36F62C81207AE80F009B8824 /* SettingsActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsActions.swift; sourceTree = "<group>"; };
 		36F62C92207BD52A009B8824 /* SpriteKit-Spring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SpriteKit-Spring.swift"; sourceTree = "<group>"; };
+		36F62C94207C0457009B8824 /* Life.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Life.swift; sourceTree = "<group>"; };
 		378B2A4D25F171169659A0F8 /* Pods-Fill the ShapeUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fill the ShapeUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Fill the ShapeUITests/Pods-Fill the ShapeUITests.release.xcconfig"; sourceTree = "<group>"; };
 		7C83A1DAB742F18F4E997D85 /* Pods-Fill the ShapeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fill the ShapeTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Fill the ShapeTests/Pods-Fill the ShapeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8254DCEC34E62F36B4FC2941 /* Pods-Fill the Shape.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fill the Shape.release.xcconfig"; path = "Pods/Target Support Files/Pods-Fill the Shape/Pods-Fill the Shape.release.xcconfig"; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 			isa = PBXGroup;
 			children = (
 				36656781207ADC240073A02B /* Shape.swift */,
+				36F62C94207C0457009B8824 /* Life.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -620,6 +623,7 @@
 				36F62C74207ADFD3009B8824 /* GameplayActions.swift in Sources */,
 				36F62C7A207AE055009B8824 /* SettingsViewController.swift in Sources */,
 				36F62C80207AE803009B8824 /* SettingsReducer.swift in Sources */,
+				36F62C95207C0457009B8824 /* Life.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

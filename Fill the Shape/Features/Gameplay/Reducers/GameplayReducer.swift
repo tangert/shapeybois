@@ -19,28 +19,34 @@ func gameplayReducer(action: Action, state: AppState?) -> AppState {
             state.gameplayState = a.state
         
         case let a as INCREASE_SPEED:
-            state.currentSpeed = state.currentSpeed - a.amount
+            state.currentSpeed -= a.amount
         
         case let a as TAP_SCREEN:
             state.currentAccuracy = a.accuracy
         
         case _ as DECREASE_TIMER:
-            state.timeLeft = state.timeLeft - 1
+            state.timeLeft -= 1
         
         case let a as SET_NEW_HIGHSCORE:
             state.highScore = a.newScore
         
         case _ as DECREASE_LIVES_LEFT:
-            state.livesLeft = state.livesLeft - 1
+            state.livesLeft -= 1
         
         case let a as SET_CURRENT_SHAPE:
             state.currentShape = a.shape
         
+        case let a as SET_CURRENT_COLOR:
+            state.currentColor = a.color
+        
         case let a as SET_CURRENT_ACCURACY:
             state.currentAccuracy = a.accuracy
         
-        case let a as SET_CURRENT_SCORE:
-            state.currentScore = a.score
+        case _ as INCREASE_SCORE:
+            state.currentScore += 1
+        
+        case _ as INCREASE_ROUNDS:
+            state.totalRounds += 1
         
         default:
             return state

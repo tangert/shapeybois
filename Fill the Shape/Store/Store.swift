@@ -8,6 +8,7 @@
 
 import Foundation
 import ReSwift
+import SpriteKit
 
 // Define the app state
 struct AppState: StateType {
@@ -22,10 +23,12 @@ struct AppState: StateType {
     var currentShape: ShapeType = .circle // cycles between the different shape types
     var currentAccuracy: Double = 1.0
     var currentScore: Int = 0
+    var currentColor: SKColor = SKColor.black
+    var totalRounds: Int = 0
     
     // Time variables
     var timeLeft: TimeInterval = 5 // time in seconds left for the user to tap the screen
-    var currentSpeed: TimeInterval = 1 // time in seconds it takes for a shape to fill and then animate back
+    var currentSpeed: TimeInterval = 0.3 // time in seconds it takes for a shape to fill and then animate back
     var reactionTime: TimeInterval = 0 // time in seconds it takes to tap the screen
     
 }
