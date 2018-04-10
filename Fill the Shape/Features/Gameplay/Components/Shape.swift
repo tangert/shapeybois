@@ -94,6 +94,28 @@ class Shape: SKShapeNode {
         self.run(SKAction.sequence([shrink, pop, back]))
     }
     
+//    func circleOfDots() {
+//        let radius: CGFloat = 100.0
+//        let numberOfCircle = 30
+//        for i in 0...numberOfCircle {
+//
+//            let circle = SKShapeNode(circleOfRadius: 2 )
+//            circle.strokeColor = SKColor.clearColor()
+//            circle.glowWidth = 1.0
+//            circle.fillColor = SKColor.orangeColor()
+//            // You can get every single circle by name:
+//            circle.name = String(format:"circle%d",i)
+//            let angle = 2 * M_PI / Double(numberOfCircle) * Double(i)
+//
+//            let circleX = radius * cos(CGFloat(angle))
+//            let circleY = radius * sin(CGFloat(angle))
+//
+//            circle.position = CGPoint(x:circleX + frame.midX, y:circleY + frame.midY)
+//            addChild(circle)
+//        }
+//    }
+    
+    
     // Shape path functions
     func createPolygonPath(parentRect: CGRect,
                            lineWidth: CGFloat,

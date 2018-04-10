@@ -12,8 +12,10 @@ import ReSwift
 
 class GameScene: SKScene, StoreSubscriber {
     
+    // MARK: Local state
     // Shows current score
-    private var currentScoreLabel : SKLabelNode?
+    private var currentAccuracyLabel : SKLabelNode?
+    private var currentScoreLabel: SKLabelNode?
     
     // Main nodes
     private var innerNode : Shape?
@@ -24,8 +26,11 @@ class GameScene: SKScene, StoreSubscriber {
     private var guideNode: Shape?
     
     // Animation parameters
-    private var animationSpeed: TimeInterval!
+    private var ANIMATION_DECREASE_RATE = 0.03
+    private var MIN_SPEED = 0.125
     
+    
+    // MARK: Lifecycle and state functions
     // Called on every new state change
     func newState(state: AppState) {
         
@@ -37,46 +42,124 @@ class GameScene: SKScene, StoreSubscriber {
         // MARK: Label
         // Current accuracy from the label
         let attributes = [NSAttributedStringKey.font: UIFont(name: "Avenir", size: 50)!]
-        let scoreTitle = "\(Int((state.currentAccuracy * 100).rounded()))%"
+        let accuracyTitle = "\(Int((state.currentAccuracy * 100).rounded()))%"
+        self.currentAccuracyLabel?.attributedText = NSAttributedString.init(string: accuracyTitle, attributes: attributes)
+        
+        let scoreTitle = "\(state.currentScore)"
         self.currentScoreLabel?.attributedText = NSAttributedString.init(string: scoreTitle, attributes: attributes)
+
         
         // MARK: Lives left
         // Affect the lives component
         
-        print(state.lastAction)
-
         if state.lastAction == "TAP_SCREEN" {
             
-            print("last action was tapped")
+            guard let inner = self.innerNode else { return }
+            guard let outer = self.outerNode else { return }
+            guard let guide = self.guideNode else { return }
             
-            if let inner = self.innerNode {
+            // Shared actions
+            let newNodeProps = SKAction.run({
+                self.setNewShapeProperties(nodes: self.allNodes!, state: state)
+            })
+            
+            let innerSequence = SKAction.run({
+                inner.run(self.animationSequence(speed: state.currentSpeed))
+            })
+            
+            if state.lastTapSuccessful {
                 
-                // Check if the screen was tapped
-                
-                // Remove everything from happening
+                print("\nSUCCESSFUL TAP")
+                print("Current speed: \(state.currentSpeed)")
+
                 inner.removeAllActions()
+                outer.removeAllActions()
+                guide.removeAllActions()
                 
-                // Successful: fill in the rest
-                if state.lastTapSuccessful {
-                    print("\nsuccessful tap\n")
-                }
-                    
-                    // Failure: fill up to the min boundary
-                else {
-                    print("\nfailure tap\n")
-                }
+                let duration = 0.5
+                let greenColorize = SKAction.customAction(withDuration: duration, actionBlock: { (node, timeElapsed) in
+                    let n = node as! Shape
+                    let alpha = timeElapsed / CGFloat(duration)
+                    n.fillColor = SKColor.green
+                    n.strokeColor = SKColor.green
+                })
                 
-                inner.run(SKAction.scale(to: 0.15, duration: 0))
-                inner.run(animationSequence(speed: state.currentSpeed))
+                let clearColorize = SKAction.customAction(withDuration: duration, actionBlock: { (node, timeElapsed) in
+                    let n = node as! Shape
+                    n.fillColor = SKColor.clear
+                    n.strokeColor = SKColor.clear
+                })
+                
+                let outerSequence = SKAction.sequence([greenColorize, clearColorize, newNodeProps, innerSequence])
+                
+                outer.run(outerSequence)
+            }
+                
+            else {
+                
+                print("\nFAILURE TAP\n")
+                inner.removeAllActions()
+                outer.removeAllActions()
+                guide.removeAllActions()
+                
+                let redColorize = SKAction.customAction(withDuration: 0.25, actionBlock: { (node, timeElapsed) in
+                    let n = node as! Shape
+                    n.fillColor = SKColor.red
+                    n.strokeColor = SKColor.red
+                })
+                
+                let clearColorize = SKAction.customAction(withDuration: 0.25, actionBlock: { (node, timeElapsed) in
+                    let n = node as! Shape
+                    n.fillColor = SKColor.clear
+                    n.strokeColor = SKColor.clear
+                })
+                
+                let guideSequence = SKAction.sequence([redColorize, clearColorize, newNodeProps, innerSequence])
+                
+                guide.run(guideSequence)
+                
             }
             
-            // MARK: Node properties
-            for node in allNodes! {
-                if let n = node {
-                    n.setNewShape(type: state.currentShape)
-                    if n.model.purpose != ShapePurpose.guide {
-                        n.setColor(color: state.currentColor)
-                    }
+            
+        }
+    }
+    
+    func shapeColorChangeAction(from fromColor: UIColor, to toColor: UIColor, withDuration duration: TimeInterval) -> SKAction {
+        
+        func components(for color: UIColor) -> [CGFloat] {
+            var comp = color.cgColor.components!
+            // converts [white, alpha] to [red, green, blue, alpha]
+            if comp.count < 4 {
+                comp.insert(comp[0], at: 0)
+                comp.insert(comp[0], at: 0)
+            }
+            return comp
+        }
+        func lerp(a: CGFloat, b: CGFloat, fraction: CGFloat) -> CGFloat {
+            return (b-a) * fraction + a
+        }
+        
+        let fromComp = components(for: fromColor)
+        let toComp = components(for: toColor)
+        let durationCGFloat = CGFloat(duration)
+        return SKAction.customAction(withDuration: duration, actionBlock: { (node, elapsedTime) -> Void in
+            let fraction = elapsedTime / durationCGFloat
+            let transColor = UIColor(red: lerp(a: fromComp[0], b: toComp[0], fraction: fraction),
+                                     green: lerp(a: fromComp[1], b: toComp[1], fraction: fraction),
+                                     blue: lerp(a: fromComp[2], b: toComp[2], fraction: fraction),
+                                     alpha: lerp(a: fromComp[3], b: toComp[3], fraction: fraction))
+            (node as! SKShapeNode).fillColor = transColor
+        })
+    }
+
+    
+    func setNewShapeProperties(nodes: [Shape?], state: AppState) {
+        // MARK: Node properties
+        for node in nodes {
+            if let n = node {
+                n.setNewShape(type: state.currentShape)
+                if n.model.purpose != ShapePurpose.guide {
+                    n.setColor(color: state.currentColor)
                 }
             }
         }
@@ -93,27 +176,35 @@ class GameScene: SKScene, StoreSubscriber {
         let newColor = SKColor.random
         let newShape = ShapeType.random()
         
-        // Dispatch the actions
-        mainStore.dispatch( tapScreen(payload: ["accuracy": accuracy as AnyObject]) )
-        mainStore.dispatch( setCurrentShape(payload: ["type": newShape as AnyObject]) )
-        mainStore.dispatch( setCurrentColor(payload: ["color": newColor]) )
+        // Initialize the tap payload
+        var tapPayload: [String: AnyObject] = [
+            "accuracy": accuracy as AnyObject,
+            "successful": false as AnyObject
+        ]
         
         // Increase the speed if the accuracy of the current tap is large enough
         if accuracy >= mainStore.state.currentDifficulty.rawValue {
             
-            if mainStore.state.currentSpeed > 0.15 {
+            if mainStore.state.currentSpeed > MIN_SPEED {
+                let decreasedSpeed = mainStore.state.currentSpeed * ANIMATION_DECREASE_RATE
                 mainStore.dispatch(
-                    increaseSpeed(payload: ["amount": mainStore.state.currentSpeed*0.025 as AnyObject])
+                    increaseSpeed(payload: ["amount": decreasedSpeed as AnyObject])
                 )
             }
             
-            mainStore.dispatch( tapSuccessful() )
+            tapPayload["successful"] = true as AnyObject
+            mainStore.dispatch(increaseScore())
 
         } else {
             
-            mainStore.dispatch( tapFailure() )
+            tapPayload["successful"] = false as AnyObject
             
         }
+        
+        mainStore.dispatch( tapScreen(payload: tapPayload))
+        mainStore.dispatch( setCurrentShape(payload: ["type": newShape as AnyObject]) )
+        mainStore.dispatch( setCurrentColor(payload: ["color": newColor]) )
+
         
 
     }
@@ -152,18 +243,18 @@ class GameScene: SKScene, StoreSubscriber {
         self.guideNode = Shape.init(type: .circle, purpose: .guide, parentRect: frame, position: center, width: guideNodeWidth )
         self.guideNode?.setColor(color: mapDifficultyToColor(setting: difficulty))
 
-        // Label node
-        self.currentScoreLabel = SKLabelNode.init(text: "accuracy: \(mainStore.state.currentAccuracy)")
-        self.currentScoreLabel?.position = labelPosition
+        // Accuracy label node
+        self.currentAccuracyLabel = SKLabelNode.init()
+        self.currentAccuracyLabel?.position = labelPosition
+        self.addChild(currentAccuracyLabel!)
+        
+        // Score label node
+        let scoreLabelPos = CGPoint.init(x: frame.midX, y: frame.midY + (frame.maxY - frame.midY)/1.5)
+        self.currentScoreLabel = SKLabelNode.init()
+        self.currentScoreLabel?.position = scoreLabelPos
         self.addChild(currentScoreLabel!)
         
         // Add all of the nodes to the scene and initialize the
-        if let inner = self.innerNode {
-            inner.lineWidth = 2.5
-            inner.run(animationSequence(speed: mainStore.state.currentSpeed))
-            self.addChild(inner)
-        }
-        
         if let outer = self.outerNode {
             outer.lineWidth = 5
             self.addChild(outer)
@@ -172,6 +263,12 @@ class GameScene: SKScene, StoreSubscriber {
         if let guide = self.guideNode {
             guide.lineWidth = 2.5
             self.addChild(guide)
+        }
+        
+        if let inner = self.innerNode {
+            inner.lineWidth = 2.5
+            inner.run(animationSequence(speed: mainStore.state.currentSpeed))
+            self.addChild(inner)
         }
         
     }

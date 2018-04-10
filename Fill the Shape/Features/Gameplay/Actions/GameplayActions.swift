@@ -114,32 +114,6 @@ struct setCurrentAccuracy: Action {
     }
 }
 
-struct tapSuccessful: Action {
-    var type = "TAP_SUCCESSFUL"
-    var payload: [String : AnyObject]?
-    
-    init(payload: [String : AnyObject]?) {
-        self.payload = payload
-    }
-    
-    init(){
-        self.payload = [:]
-    }
-}
-
-struct tapFailure: Action {
-    var type = "TAP_FAILURE"
-    var payload: [String : AnyObject]?
-    
-    init(payload: [String : AnyObject]?) {
-        self.payload = payload
-    }
-    
-    init(){
-        self.payload = [:]
-    }
-}
-
 struct increaseScore: Action {
     var type = "INCREASE_SCORE"
     var payload: [String : AnyObject]?

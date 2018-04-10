@@ -26,6 +26,7 @@ func gameplayReducer(action: Action, state: AppState?) -> AppState {
 
     case let a as tapScreen:
         state.currentAccuracy = a.payload!["accuracy"] as! Double
+        state.lastTapSuccessful = a.payload!["successful"] as! Bool
         state.lastAction = a.type
 
     case let a as setNewHighScore:
@@ -46,14 +47,6 @@ func gameplayReducer(action: Action, state: AppState?) -> AppState {
     
     case let a as setCurrentAccuracy:
         state.currentAccuracy = a.payload!["accuracy"] as! Double
-        state.lastAction = a.type
-
-    case let a as tapSuccessful:
-        state.lastTapSuccessful = true
-        state.lastAction = a.type
-    
-    case let a as tapFailure:
-        state.lastTapSuccessful = false
         state.lastAction = a.type
     
     case let a as increaseScore:
