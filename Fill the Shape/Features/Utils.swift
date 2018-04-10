@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import ReSwift
 
 // Stores the difficulty setting for the current game
 enum difficultySetting: Double {

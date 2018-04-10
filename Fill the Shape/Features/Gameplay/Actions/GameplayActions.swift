@@ -10,36 +10,171 @@ import Foundation
 import ReSwift
 import SpriteKit
 
-// MARK: Gameplay setup
-struct ADJUST_GAMEPLAY_STATE: Action {
-    let state: GameplayState
+struct adjustGameplayState: Action {
+    var type = "ADJUST_GAMEPLAY_STATE"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
 }
 
-// MARK: User actions
-// When the user taps the screen
-struct TAP_SCREEN: Action {
-    let accuracy: Double
+struct tapScreen: Action {
+    var type = "TAP_SCREEN"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
 }
 
-// MARK: Gameplay variable actions
-struct DECREASE_TIMER: Action {}
-struct INCREASE_SPEED: Action {
-    let amount: TimeInterval
+struct increaseSpeed: Action {
+    var type = "INCREASE_SPEED"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
 }
 
-struct SET_NEW_HIGHSCORE: Action {
-    let newScore: Int
+struct setNewHighScore: Action {
+    var type = "SET_NEW_HIGHSCORE"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
 }
-struct DECREASE_LIVES_LEFT: Action {}
-struct SET_CURRENT_COLOR: Action {
-    let color: SKColor
-}
-struct SET_CURRENT_SHAPE: Action {
-    let shape: ShapeType
-}
-struct SET_CURRENT_ACCURACY: Action {
-    let accuracy: Double
-}
-struct INCREASE_SCORE: Action {}
-struct INCREASE_ROUNDS: Action {}
 
+struct decreaseLivesLeft: Action {
+    var type = "DECREASE_LIVES_LEFT"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct setCurrentColor: Action {
+    var type = "SET_CURRENT_COLOR"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct setCurrentShape: Action {
+    var type = "SET_CURRENT_SHAPE"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct setCurrentAccuracy: Action {
+    var type = "SET_CURRENT_ACCURACY"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct tapSuccessful: Action {
+    var type = "TAP_SUCCESSFUL"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct tapFailure: Action {
+    var type = "TAP_FAILURE"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct increaseScore: Action {
+    var type = "INCREASE_SCORE"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct increaseRounds: Action {
+    var type = "INCREASE_ROUNDS"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}
+
+struct setLastAction: Action {
+    var type = "SET_LAST_ACTION"
+    var payload: [String : AnyObject]?
+    
+    init(payload: [String : AnyObject]?) {
+        self.payload = payload
+    }
+    
+    init(){
+        self.payload = [:]
+    }
+}

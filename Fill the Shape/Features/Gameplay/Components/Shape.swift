@@ -46,9 +46,9 @@ struct ShapeModel {
 class Shape: SKShapeNode {
     
     // Holds basic shape information about the node
+    var model: ShapeModel!
     var parentRect: CGRect!
     var testRect: CGRect!
-    var model: ShapeModel!
     var width: CGFloat!
     var color: SKColor!
     var rotationOffset = CGFloat(.pi / 2.0)
@@ -107,9 +107,7 @@ class Shape: SKShapeNode {
             
             // Circular path
             if type == .circle {
-                
                 let circlePath = UIBezierPath(arcCenter: center, radius: CGFloat(self.width/2), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
-                
                 return circlePath
             }
             

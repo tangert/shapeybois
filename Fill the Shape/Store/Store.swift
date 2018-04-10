@@ -10,6 +10,8 @@ import Foundation
 import ReSwift
 import SpriteKit
 
+// Extend store and create type alias to allow standard actions to pass into the store
+
 // Define the app state
 struct AppState: StateType {
     
@@ -21,10 +23,12 @@ struct AppState: StateType {
     var highScore: Int = 0
     var livesLeft: Int = 3
     var currentShape: ShapeType = .circle // cycles between the different shape types
-    var currentAccuracy: Double = 1.0
+    var currentAccuracy: Double = 0
     var currentScore: Int = 0
     var currentColor: SKColor = SKColor.black
     var totalRounds: Int = 0
+    var lastTapSuccessful: Bool = false
+    var lastAction: String = adjustGameplayState().type // keeps track of the last action
     
     // Time variables
     var timeLeft: TimeInterval = 5 // time in seconds left for the user to tap the screen
@@ -33,19 +37,10 @@ struct AppState: StateType {
     
 }
 
-// Define the app reducer
-//func combineReducers(_ reducers: [Reducer]) -> Reducer {
-//    return {
-//        action, state in
-//        for reducer in reducers {
-//            reducer(action)
-//        }
-//    }
-//}
-
 func appReducer(action: Action, state: AppState?) -> AppState {
     return AppState()
 }
 
 // Finally, define the store
 var mainStore = Store<AppState>(reducer: gameplayReducer, state: nil)
+

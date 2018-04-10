@@ -8,6 +8,7 @@
 
 import Foundation
 import ReSwift
+import SpriteKit
 
 func gameplayReducer(action: Action, state: AppState?) -> AppState {
     
@@ -15,41 +16,56 @@ func gameplayReducer(action: Action, state: AppState?) -> AppState {
     
     switch action {
         
-        case let a as ADJUST_GAMEPLAY_STATE:
-            state.gameplayState = a.state
+    case let a as adjustGameplayState:
+        state.gameplayState = a.payload!["state"] as! GameplayState
+        state.lastAction = a.type
+    
+    case let a as increaseSpeed:
+        state.currentSpeed -= a.payload!["amount"] as! TimeInterval
+        state.lastAction = a.type
+
+    case let a as tapScreen:
+        state.currentAccuracy = a.payload!["accuracy"] as! Double
+        state.lastAction = a.type
+
+    case let a as setNewHighScore:
+        state.highScore = a.payload!["newScore"] as! Int
+        state.lastAction = a.type
+    
+    case let a as decreaseLivesLeft:
+        state.livesLeft -= 1
+        state.lastAction = a.type
+    
+    case let a as setCurrentShape:
+        state.currentShape = a.payload!["type"] as! ShapeType
+        state.lastAction = a.type
+    
+    case let a as setCurrentColor:
+        state.currentColor = a.payload!["color"] as! SKColor
+        state.lastAction = a.type
+    
+    case let a as setCurrentAccuracy:
+        state.currentAccuracy = a.payload!["accuracy"] as! Double
+        state.lastAction = a.type
+
+    case let a as tapSuccessful:
+        state.lastTapSuccessful = true
+        state.lastAction = a.type
+    
+    case let a as tapFailure:
+        state.lastTapSuccessful = false
+        state.lastAction = a.type
+    
+    case let a as increaseScore:
+        state.currentScore += 1
+        state.lastAction = a.type
+    
+    case let a as increaseRounds:
+        state.totalRounds += 1
+        state.lastAction = a.type
         
-        case let a as INCREASE_SPEED:
-            state.currentSpeed -= a.amount
-        
-        case let a as TAP_SCREEN:
-            state.currentAccuracy = a.accuracy
-        
-        case _ as DECREASE_TIMER:
-            state.timeLeft -= 1
-        
-        case let a as SET_NEW_HIGHSCORE:
-            state.highScore = a.newScore
-        
-        case _ as DECREASE_LIVES_LEFT:
-            state.livesLeft -= 1
-        
-        case let a as SET_CURRENT_SHAPE:
-            state.currentShape = a.shape
-        
-        case let a as SET_CURRENT_COLOR:
-            state.currentColor = a.color
-        
-        case let a as SET_CURRENT_ACCURACY:
-            state.currentAccuracy = a.accuracy
-        
-        case _ as INCREASE_SCORE:
-            state.currentScore += 1
-        
-        case _ as INCREASE_ROUNDS:
-            state.totalRounds += 1
-        
-        default:
-            return state
+    default:
+        return state
     }
     
     return state
